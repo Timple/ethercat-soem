@@ -28,7 +28,7 @@
 #define EC_TIMEOUTMON 500
 
 char IOmap[4096];
-pthread_t thread1;
+OSAL_THREAD_HANDLE thread1;
 int expectedWKC;
 boolean needlf;
 volatile int wkc;
@@ -37,7 +37,7 @@ uint8 currentgroup = 0;
 
 void simpletest(char *ifname)
 {
-    int i, j, oloop, iloop, wkc_count, chk;
+    int i, j, oloop, iloop, chk;
     needlf = FALSE;
     inOP = FALSE;
 
@@ -92,7 +92,6 @@ void simpletest(char *ifname)
          if (ec_slave[0].state == EC_STATE_OPERATIONAL )
          {
             printf("Operational state reached for all slaves.\n");
-            wkc_count = 0;
             inOP = TRUE;
                 /* cyclic loop */
             for(i = 1; i <= 10000; i++)
@@ -113,12 +112,12 @@ void simpletest(char *ifname)
                         for(j = 0 ; j < iloop; j++)
                         {
                             printf(" %2.2x", *(ec_slave[0].inputs + j));
-                        }   
-                        printf(" T:%lld\r",ec_DCtime);
+                        }
+                        //printf(" T:%"PRId64"\r",ec_DCtime);
                         needlf = TRUE;
                     }
-                    usleep(5000);
-                    
+                    osal_usleep(5000);
+
                 }
                 inOP = FALSE;
             }
@@ -154,7 +153,7 @@ void simpletest(char *ifname)
     }   
 }   
 
-void ecatcheck( void *ptr )
+OSAL_THREAD_FUNC ecatcheck( void *ptr )
 {
     int slave;
 
@@ -226,19 +225,19 @@ void ecatcheck( void *ptr )
             if(!ec_group[currentgroup].docheckstate)
                printf("OK : all slaves resumed OPERATIONAL.\n");
         }
-        usleep(10000);
-    }   
-}   
+        osal_usleep(10000);
+    }
+}
 
 int main(int argc, char *argv[])
 {
-    int iret1;
    printf("SOEM (Simple Open EtherCAT Master)\nSimple test\n");
 
    if (argc > 1)
    {      
       /* create thread to handle slave error handling in OP */
-      iret1 = pthread_create( &thread1, NULL, (void *) &ecatcheck, (void*) &ctime);   
+//      pthread_create( &thread1, NULL, (void *) &ecatcheck, (void*) &ctime);
+      osal_thread_create(&thread1, 128000, &ecatcheck, (void*) &ctime);
       /* start cyclic part */
       simpletest(argv[1]);
    }
