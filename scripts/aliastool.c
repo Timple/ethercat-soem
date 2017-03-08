@@ -373,12 +373,12 @@ void eepromtool(char *ifname, int slave, int mode, char *fname)
                   printf("Error reading file, abort.\n"); 
             }
             if (mode == MODE_WRITEALIAS)
-			{
-			  if(eeprom_writealias(slave, alias))
-			    printf("Alias %4.4X written successfully to slave %d\n");
-			  else
-                printf("Alias not written\n");	
-			}
+            {
+              if(eeprom_writealias(slave, alias))
+                printf("Alias %4.4X written successfully to slave %d\n",alias,slave);
+              else
+                printf("Alias not written\n");  
+            }
          }
          else
             printf("Slave number outside range.\n");
@@ -401,18 +401,18 @@ int main(int argc, char *argv[])
    if (argc > 3)
    {      
       slave = atoi(argv[2]);
-      if ((strncmp(argv[3], "-i", sizeof("-i")) == 0))   mode = MODE_INFO;	    
-	  if (argc > 4)
-	  {
+      if ((strncmp(argv[3], "-i", sizeof("-i")) == 0))   mode = MODE_INFO;      
+      if (argc > 4)
+      {
         if ((strncmp(argv[3], "-r", sizeof("-r")) == 0))   mode = MODE_READBIN;
         if ((strncmp(argv[3], "-ri", sizeof("-ri")) == 0)) mode = MODE_READINTEL;
         if ((strncmp(argv[3], "-w", sizeof("-w")) == 0))   mode = MODE_WRITEBIN;
         if ((strncmp(argv[3], "-wi", sizeof("-wi")) == 0)) mode = MODE_WRITEINTEL;
         if ((strncmp(argv[3], "-walias", sizeof("-walias")) == 0))
-	    {
-	       mode = MODE_WRITEALIAS;
-		   alias = atoi(argv[4]);
-	    }
+        {
+           mode = MODE_WRITEALIAS;
+           alias = atoi(argv[4]);
+        }
       }
       /* start tool */
       eepromtool(argv[1],slave,mode,argv[4]);

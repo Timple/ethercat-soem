@@ -52,7 +52,7 @@ catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ethercat_soem
 #  CATKIN_DEPENDS other_catkin_pkg
- DEPENDS pthread rt
+ DEPENDS 
 )
 
 ###########

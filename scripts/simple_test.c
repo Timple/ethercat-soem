@@ -114,7 +114,7 @@ void simpletest(char *ifname)
                         {
                             printf(" %2.2x", *(ec_slave[0].inputs + j));
                         }   
-                        printf(" T:%lld\r",ec_DCtime);
+                        printf(" T:%ld\r",ec_DCtime);
                         needlf = TRUE;
                     }
                     usleep(5000);
